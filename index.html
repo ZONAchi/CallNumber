@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            padding: 20px;
+            background-color: rgb(234, 238, 219);
+        }
+
+        #num_show {
+            width: 300px;
+            height: 300px;
+            background-color: rgb(255, 255, 255);
+            display: flex;
+            flex-direction: column;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 10px;
+            overflow-y: scroll;
+        }
+
+        #num_show>div {
+            border-bottom: 2px solid rgb(221, 221, 221);
+            display: flex;
+            flex-direction: row;
+        }
+
+        .use {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        #call {
+            width: 70px;
+            height: 50px;
+            background-color: rgb(255, 206, 93);
+            border-radius: 10px;
+            border: 3px solid snow;
+        }
+
+        #select {
+            width: 205px;
+            height: 30px;
+        }
+
+        #name {
+            width: 200px;
+            height: 30px;
+        }
+
+        #send {
+            width: 70px;
+            height: 50px;
+            background-color: rgb(149, 197, 127);
+            border-radius: 10px;
+            border: 3px solid snow;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>叫號系統</h2>
+    <section id="num_show">
+        <div>
+            <span></span>
+            <span></span>
+        </div>
+        <!-- <div id="yellow" style="background-color: rgb(255, 250, 180);">
+            <span></span>
+            <span></span>
+        </div>
+        <div id="pink" style="background-color: rgb(244, 188, 179);">
+            <span></span>
+            <span></span>
+        </div> -->
+    </section>
+    <form class="use">
+        <button id="call" type="button">叫號</button>
+        <select name="" id="select">
+            <option id="normal" value="一般掛號">一般掛號</option>
+            <option id="vip" value="VIP掛號">VIP掛號</option>
+            <option id="svip" value="特殊掛號">特殊掛號</option>
+        </select>
+        <input type="text" id="name" placeholder="請輸入姓名">
+        <button id="send" type="button">送出</button>
+    </form>
+
+    <script>
+        let select_show = document.querySelector('.select_show');
+        let input_type = document.querySelector('#select');
+        let input_name = document.querySelector('#name');
+        let show = document.querySelectorAll('#show');
+
+        let array_type = [];
+        let array_name = [];
+
+        let array_svip = 0;
+        let array_vip = 0;
+
+        let now_people = 0;
+        let call = document.querySelector('#call');
+        call.addEventListener('click', function () {
+            if (array_type.length == 0) {
+                alert('無病號')
+                return;
+            } else {
+                now_people++;
+                let all_people = document.querySelectorAll('#num_show>div');
+                all_people.forEach((item, index) => {
+                    if (index < now_people) {
+                        item.style.backgroundColor = 'rgb(244, 188, 179)';
+                        if (array_type[index] == 'VIP掛號') {
+                            array_vip--;
+                        }
+                        if (array_type[index] == '特殊掛號') {
+                            array_svip--;
+                        }
+                    }
+                })
+            }
+
+        });
+
+        let num_show = document.querySelector('#num_show');
+
+        let send = document.querySelector('#send');
+        send.addEventListener('click', function () {
+            console.log('掛號類別', array_type);
+            console.log('掛號姓名', array_name);
+            if (input_type.value == '一般掛號') {
+                array_type.push(input_type.value);
+                array_name.push(input_name.value);
+            } else if (input_type.value == 'VIP掛號') {
+                array_type.splice((now_people + array_svip + array_vip), 0, input_type.value);
+                array_name.splice((now_people + array_svip + array_vip), 0, input_name.value);
+                array_vip++;
+            } else if (input_type.value == '特殊掛號') {
+                array_type.splice((now_people + array_svip), 0, input_type.value);
+                array_name.splice((now_people + array_svip), 0, input_name.value);
+                array_svip++;
+            }
+
+            let num_show = document.querySelector('#num_show');
+            num_show.innerHTML = '';
+            array_type.forEach((item, index) => {
+                if (index < now_people) {
+                    num_show.innerHTML += `
+                    <div style="background-color: rgb(244, 188, 179);">
+                         <span>${array_type[index]}</span>
+                         <span>${array_name[index]}</span>
+                    </div>`;
+                } else {
+                    num_show.innerHTML += `
+                    <div>
+                         <span>${array_type[index]}</span>
+                         <span>${array_name[index]}</span>
+                    </div>`;
+                }
+            })
+        });
+    </script>
+</body>
+
+</html>
